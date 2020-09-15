@@ -7,17 +7,28 @@
 //
 
 import UIKit
+import CoreNFC
 
-class ViewController: UIViewController {
+
+@available(iOS 13.0, *)
+class ViewController: UIViewController  {
     
+     var session: NFCTagReaderSession?
+    
+ 
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        weghtlabel.text = "0 grams"
+
         
-        // Do any additional setup after loading the view, typically from a nib.
+        
+    
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -25,6 +36,7 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @IBOutlet weak var weghtlabel: UILabel!
     
     @IBOutlet weak var Display: UILabel!
     
@@ -37,9 +49,9 @@ class ViewController: UIViewController {
     @IBAction func Launch(_ sender: Any) {
         
         
-        var СarbohydratesIn100toInt:Double? = Double( (СarbohydratesIn100?.text)! )
+        let СarbohydratesIn100toInt:Double? = Double( (СarbohydratesIn100?.text)! )
         
-        var CountGrammtoInt:Double? = Double( (CountGramm?.text)! )
+        let CountGrammtoInt:Double? = Double( (CountGramm?.text)! )
         
         
         func calc (_ V:Double,_ Y:Double) -> Double {
@@ -48,12 +60,35 @@ class ViewController: UIViewController {
             
         }
         
-        let result = String(calc( СarbohydratesIn100toInt!, CountGrammtoInt!))
+        let result = String(calc( СarbohydratesIn100toInt!, CountGrammtoInt!)) 
         
         Display?.text = result
+        print("/(result)")
         
         
     }
+    
+    
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)  {
+        if let touch = touches.first {
+            if traitCollection.forceTouchCapability == UIForceTouchCapability.available {
+                if touch.force >= touch.maximumPossibleForce {
+                    weghtlabel.text = "385+ grams"
+                } else {
+                    let force = touch.force/touch.maximumPossibleForce
+                    let grams = force * 385
+                    weghtlabel.text = "\(Int(grams)) grams"
+                }
+            }
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+         weghtlabel.text = "0 grams"
+    }
+    
+
     
   
     
